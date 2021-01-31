@@ -62,10 +62,39 @@ int loadData(const char* filename, bool ignoreFirstRow) {
 	return SUCCESS;
 }
 
+bool CPUTimeSort(process_stats stat1, process_stats stat2) {
+	return stat1.cpu_time < stat2.cpu_time;
+}
+
+bool ProcessNumberSort(process_stats stat1, process_stats stat2) {
+	return stat1.process_number < stat2.process_number;
+}
+
+bool StartTimeSort(process_stats stat1, process_stats stat2) {
+	return stat1.start_time < stat2.start_time;
+}
+
+bool IOTimeSort(process_stats stat1, process_stats stat2) {
+	return stat1.io_time < stat2.io_time;
+}
+
 
 //will sort according to user preference
 void sortData(SORT_ORDER mySortOrder) {
-
+	switch(mySortOrder){
+	case CPU_TIME:
+		sort(myData.begin(), myData.end(), CPUTimeSort);
+		break;
+	case PROCESS_NUMBER:
+		sort(myData.begin(), myData.end(), ProcessNumberSort);
+		break;
+	case START_TIME:
+		sort(myData.begin(), myData.end(), StartTimeSort);
+		break;
+	case IO_TIME:
+		sort(myData.begin(), myData.end(), IOTimeSort);
+		break;
+	}
 }
 
 process_stats getNext() {
