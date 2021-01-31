@@ -14,6 +14,8 @@
 
 using namespace std;
 
+vector<process_stats> myData;
+
 //********************** private to this compilation unit **********************
 
 //if myString does not contain a string rep of number returns o
@@ -23,7 +25,32 @@ int stringToInt(const char *myString) {
 }
 
 int loadData(const char* filename, bool ignoreFirstRow) {
-
+	ifstream inputFile;
+	inputFile.open(*filename);
+	if (!inputFile) {
+		return COULD_NOT_OPEN_FILE;
+	}
+	while (!inputFile.eof()) {
+		process_stats rowStats;
+		istringstream row;
+		getline(inputFile, row); // get row
+		if (!getline(row, rowStats.process_number, ",")){
+			continue;
+		}
+		if (!getline(row, rowStats.start_time, ",")){
+			continue;
+		}
+		if (!getline(row, rowStats.cpu_time, ",")){
+			continue;
+		}
+		if (!getline(row, rowStats.io_time)){
+			continue;
+		}
+		myData.push_back(rowStats);
+		if (!ignoreFirstRow){
+			ignoreFirstRow = true;
+		}
+	}
 	return SUCCESS;
 }
 
