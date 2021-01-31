@@ -40,20 +40,21 @@ int loadData(const char* filename, bool ignoreFirstRow) {
 			continue;
 		}
 		rowStats.process_number = stringToInt(str.c_str());
-		if (!getline(rowStream, str, ',')){
+		if (!getline(rowStream, str, ',') || rowStats.process_number == 0){
 			continue;
 		}
 		rowStats.start_time = stringToInt(str.c_str());
-		if (!getline(rowStream, str, ',')){
+		if (!getline(rowStream, str, ',') || rowStats.start_time == 0){
 			continue;
 		}
 		rowStats.cpu_time = stringToInt(str.c_str());
-		if (!getline(rowStream, str)){
+		if (!getline(rowStream, str) || rowStats.cpu_time == 0){
 			continue;
 		}
 		rowStats.io_time = stringToInt(str.c_str());
-		if (ignoreFirstRow){
+		if (ignoreFirstRow || rowStats.io_time == 0){
 			ignoreFirstRow = false;
+			continue;
 		}
 		else {
 			myData.push_back(rowStats);
