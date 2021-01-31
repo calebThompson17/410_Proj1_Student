@@ -41,23 +41,25 @@ int loadData(const char* filename, bool ignoreFirstRow) {
 			ignoreFirstRow = false;
 			continue;
 		}
-		if (!getline(rowStream, str, ',')){
+		if (!getline(rowStream, str, ',') || str.empty()){
 			continue;
 		}
 		rowStats.process_number = stringToInt(str.c_str());
-		if (!getline(rowStream, str, ',')){
+		if (!getline(rowStream, str, ',') || str.empty()){
 			continue;
 		}
 		rowStats.start_time = stringToInt(str.c_str());
-		if (!getline(rowStream, str, ',')){
+		if (!getline(rowStream, str, ',') || str.empty()){
 			continue;
 		}
 		rowStats.cpu_time = stringToInt(str.c_str());
-		if (!getline(rowStream, str)){
+		if (!getline(rowStream, str) || str.empty()){
 			continue;
 		}
 		rowStats.io_time = stringToInt(str.c_str());
-		myData.push_back(rowStats);
+		if (!str.empty()){
+			myData.push_back(rowStats);
+		}
 	}
 	return SUCCESS;
 }
@@ -99,7 +101,7 @@ void sortData(SORT_ORDER mySortOrder) {
 
 process_stats getNext() {
 	process_stats myFirst;
-	myData.front() = myFirst;
+	myFirst = myData.front();
 	myData.erase(myData.begin());
 	return myFirst;
 }
