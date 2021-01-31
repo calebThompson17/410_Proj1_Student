@@ -25,30 +25,38 @@ int stringToInt(const char *myString) {
 }
 
 int loadData(const char* filename, bool ignoreFirstRow) {
-	ifstream inputFile;
-	inputFile.open(*filename);
-	if (!inputFile) {
+	ifstream inputFile (filename);
+	if (!inputFile.is_open()) {
 		return COULD_NOT_OPEN_FILE;
 	}
 	while (!inputFile.eof()) {
 		process_stats rowStats;
-		istringstream row;
-		getline(inputFile, row); // get row
-		if (!getline(row, rowStats.process_number, ",")){
+		string rowString;
+		getline(inputFile, rowString); // get row
+		stringstream rowStream;
+		rowStream.str(rowString);
+		string str;
+		if (!getline(rowStream, str, ',')){
 			continue;
 		}
-		if (!getline(row, rowStats.start_time, ",")){
+		rowStats.process_number = stringToInt(str.c_str());
+		if (!getline(rowStream, str, ',')){
 			continue;
 		}
-		if (!getline(row, rowStats.cpu_time, ",")){
+		rowStats.start_time = stringToInt(str.c_str());
+		if (!getline(rowStream, str, ',')){
 			continue;
 		}
-		if (!getline(row, rowStats.io_time)){
+		rowStats.cpu_time = stringToInt(str.c_str());
+		if (!getline(rowStream, str)){
 			continue;
 		}
-		myData.push_back(rowStats);
-		if (!ignoreFirstRow){
-			ignoreFirstRow = true;
+		rowStats.io_time = stringToInt(str.c_str());
+		if (ignoreFirstRow){
+			ignoreFirstRow = false;
+		}
+		else {
+			myData.push_back(rowStats);
 		}
 	}
 	return SUCCESS;
@@ -62,13 +70,14 @@ void sortData(SORT_ORDER mySortOrder) {
 
 process_stats getNext() {
 	process_stats myFirst;
-
+	myData.front() = myFirst;
+	myData.erase(myData.begin());
 	return myFirst;
 }
 
 //returns number of process_stats structs in the vector holding them
 int getNumbRows(){
-	return 0;
+	return myData.size();
 }
 
 
